@@ -1,0 +1,19 @@
+logger1:
+    interval: 5 # minutes
+    host: ftp.myserver.com
+    port: 21
+    username: foo
+    password: bar
+    log-file-directory: /home/fred/logs
+    log-file-name: logger1.log
+    level: INFO
+
+logger2:
+    interval: 3 # minutes
+    host: ftp.anotherserver.com
+    port: 21
+    username: foo
+    password: bar
+    log-file-directory: /home/fred/logs
+    log-file-name: logger2.log
+    level: INFO
