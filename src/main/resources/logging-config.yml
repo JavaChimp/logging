@@ -4,7 +4,7 @@ logger1:
     port: 21
     username: foo
     password: bar
-    log-file-directory: /home/fred/logs
+    log-file-directory: /var/skyhook/logs
     log-file-name: logger1.log
     level: INFO
 
@@ -14,6 +14,6 @@ logger2:
     port: 21
     username: foo
     password: bar
-    log-file-directory: /home/fred/logs
+    log-file-directory: /var/skyhook/logs
     log-file-name: logger2.log
-    level: INFO
+    level: DEBUG

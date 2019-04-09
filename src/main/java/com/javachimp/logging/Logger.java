@@ -1,14 +1,8 @@
 package com.javachimp.logging;
 
 public interface Logger {
-    void debug(String message);
 
-    void info(String message);
-
-    void error(String message);
-
-    default LogWriter getWriter() {
-      return new ConsoleLogWriter();
-    }
-
+    public abstract void debug(String message);
+    public abstract void info(String message);
+    public abstract void error(String message);
 }

@@ -1,20 +1,27 @@
 package com.javachimp.logging.file;
 
-import com.javachimp.logging.AbstractLogger;
-import com.javachimp.logging.LogLevel;
-import com.javachimp.logging.LogMessage;
-import com.javachimp.logging.LoggingQueue;
+import com.javachimp.lifecycle.LifeCycleAware;
+import com.javachimp.logging.*;
 
-public class FileLogger extends AbstractLogger {
+public class FileLogger extends AbstractLogger implements LifeCycleAware {
 
     private final LoggingQueue queue;
+    private final LogWriter writer;
 
-    public FileLogger() {
-        this.queue = new LoggingQueue(this);
+    public FileLogger(LogLevel level, String directoryName, String fileName) {
+        super(level);
+        this.writer = new FileLogWriter(directoryName, fileName);
+        this.queue = new LoggingQueue(writer);
+
     }
 
     @Override
     protected void log(LogLevel level, String message) {
         queue.offer(new LogMessage(level, message));
+    }
+
+    @Override
+    public void shutdown() {
+        queue.stop();
     }
 }
