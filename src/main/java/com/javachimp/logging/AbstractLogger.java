@@ -10,19 +10,19 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public final void debug(String message) {
-        if (level.getThreshold() >= LogLevel.DEBUG.getThreshold())
+        if (level.getThreshold() <= LogLevel.DEBUG.getThreshold())
             this.log(LogLevel.DEBUG, message);
     }
 
     @Override
     public final void info(String message) {
-        if (level.getThreshold() >= LogLevel.INFO.getThreshold())
+        if (level.getThreshold() <= LogLevel.INFO.getThreshold())
             this.log(LogLevel.INFO, message);
     }
 
     @Override
     public final void error(String message) {
-        if (level.getThreshold() >= LogLevel.ERROR.getThreshold())
+        if (level.getThreshold() <= LogLevel.ERROR.getThreshold())
             this.log(LogLevel.ERROR, message);
     }
 

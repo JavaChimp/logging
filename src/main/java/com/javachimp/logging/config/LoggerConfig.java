@@ -80,11 +80,13 @@ public class LoggerConfig {
         this.level = level;
     }
 
+    //The proper way to do this is with constants instead of literals.
     public static LoggerConfig fromMapEntry(Map.Entry<String, Map<String, ?>> entry) {
 
         LoggerConfig config = new LoggerConfig(entry.getKey());
         Map<String, ?> value = entry.getValue();
         config.setHost((String) value.get("host"));
+        config.setPort((Integer) value.get("port"));
         config.setInterval((Integer) value.get("interval"));
         config.setLevel(LogLevel.fromString((String) value.get("level")));
         config.setLogFileDriectory((String) value.get("log-file-directory"));

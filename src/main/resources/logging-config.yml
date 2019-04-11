@@ -17,3 +17,13 @@ logger2:
     log-file-directory: /var/skyhook/logs
     log-file-name: logger2.log
     level: DEBUG
+
+logger3:
+    interval: 1 # minutes
+    host: localhost
+    port: 21
+    username: dwpascal34
+    password: scream123
+    log-file-directory: /var/skyhook/logs
+    log-file-name: logger3.log
+    level: ERROR

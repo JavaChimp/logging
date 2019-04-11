@@ -9,14 +9,19 @@ import com.javachimp.logging.config.LoggerConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 
 public class FileLogger extends AbstractLogger implements LifeCycleAware, Archivable {
+
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("_yyyyMMdd_hhmmss");
 
     private  LoggingQueue queue;
     private  File logFile;
     private  FtpArchiver archiver;
     private  Timer archiveTimer;
+    private final Object lock = new Object();
 
     public FileLogger(LoggerConfig config) {
         super(config.getLevel());
@@ -29,7 +34,7 @@ public class FileLogger extends AbstractLogger implements LifeCycleAware, Archiv
             throw new LoggingException(ioe);
         }
 
-        this.queue = new LoggingQueue(new FileLogWriter(logFile));
+        this.queue = new LoggingQueue(new FileLogWriter(logFile, lock));
         this.archiver = new FtpArchiver(config);
         this.archiveTimer = new Timer();
         long intervalMs = config.getInterval() * 60000L;
@@ -43,13 +48,29 @@ public class FileLogger extends AbstractLogger implements LifeCycleAware, Archiv
 
     @Override
     public void archive() {
-        synchronized (logFile) {
+
+        if (logFile.length() == 0L)
+            return;
+
+        String logFileName = logFile.getAbsolutePath();
+        String archiveLogFileName = logFileName + dateFormatter.format(LocalDateTime.now());
+
+        synchronized (lock) {
             try {
-                archiver.archive(logFile);
+
+                logFile.renameTo(new File(archiveLogFileName));
+                logFile = new File(logFileName);
+                logFile.createNewFile();
+
+                queue.reset(logFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        File archiveFile = new File(archiveLogFileName);
+        archiver.archive(archiveFile);
+        archiveFile.delete();
     }
 
     @Override

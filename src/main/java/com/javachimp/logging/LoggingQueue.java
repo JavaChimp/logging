@@ -1,5 +1,6 @@
 package com.javachimp.logging;
 
+import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +27,10 @@ public class LoggingQueue {
         this.writer = writer;
         consumerThread.start();
         isLogging.set(true);
+    }
+
+    public void reset(File logFile) {
+        this.writer.roll(logFile);
     }
 
     public void offer(LogMessage message) {

@@ -11,13 +11,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FileLogWriter implements LogWriter {
 
-    private final PrintWriter writer;
-    private File logFile;
+    private PrintWriter writer;
+    private final Object lock;
 
 
-    public FileLogWriter(File logFile) {
+    public FileLogWriter(File logFile, Object lock) {
 
-        this.logFile = logFile;
+        this.lock = lock;
         try {
             this.writer = new PrintWriter(new FileWriter(logFile));
         } catch (IOException ioe) {
@@ -27,8 +27,7 @@ public class FileLogWriter implements LogWriter {
 
     @Override
     public void write(String message) {
-
-        synchronized(logFile) {
+        synchronized(lock) {
             writer.println(message);
             writer.flush();
         }
@@ -36,10 +35,18 @@ public class FileLogWriter implements LogWriter {
 
     @Override
     public synchronized void close() {
+        writer.flush();
+        writer.close();
+    }
 
-        synchronized(logFile) {
-            writer.flush();
-            writer.close();
+    @Override
+    public void roll(File logFile) {
+        synchronized (lock) {
+            try {
+                this.writer = new PrintWriter(new FileWriter(logFile));
+            } catch (IOException ioe) {
+                throw new LoggingException(ioe);
+            }
         }
     }
 }
