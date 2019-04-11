@@ -13,7 +13,7 @@ public class LoggingQueue {
 
     //Prevents the Supplier from being blocked.
     private final Queue<LogMessage> messages
-                    = new ConcurrentLinkedQueue();
+                    = new ConcurrentLinkedQueue<LogMessage>();
 
     private final LogMessageConsumer consumer = new LogMessageConsumer();
     private final LogMessageSupplier supplier = new LogMessageSupplier();

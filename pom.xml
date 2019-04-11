@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <snakeyaml.version>1.24</snakeyaml.version>
+        <commons-net.version>3.6</commons-net.version>
     </properties>
 
     <dependencies>
@@ -22,6 +23,12 @@
             <artifactId>snakeyaml</artifactId>
             <version>${snakeyaml.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${commons-net.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

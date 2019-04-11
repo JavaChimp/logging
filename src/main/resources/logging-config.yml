@@ -1,19 +1,19 @@
 logger1:
-    interval: 5 # minutes
-    host: ftp.myserver.com
+    interval: 1 # minutes
+    host: localhost
     port: 21
-    username: foo
-    password: bar
+    username: dwpascal34
+    password: scream123
     log-file-directory: /var/skyhook/logs
     log-file-name: logger1.log
     level: INFO
 
 logger2:
-    interval: 3 # minutes
-    host: ftp.anotherserver.com
+    interval: 1 # minutes
+    host: localhost
     port: 21
-    username: foo
-    password: bar
+    username: dwpascal34
+    password: scream123
     log-file-directory: /var/skyhook/logs
     log-file-name: logger2.log
     level: DEBUG

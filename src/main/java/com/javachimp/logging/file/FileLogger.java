@@ -2,17 +2,54 @@ package com.javachimp.logging.file;
 
 import com.javachimp.lifecycle.LifeCycleAware;
 import com.javachimp.logging.*;
+import com.javachimp.logging.archive.Archivable;
+import com.javachimp.logging.archive.ArchiveTask;
+import com.javachimp.logging.archive.ftp.FtpArchiver;
+import com.javachimp.logging.config.LoggerConfig;
 
-public class FileLogger extends AbstractLogger implements LifeCycleAware {
+import java.io.File;
+import java.io.IOException;
+import java.util.Timer;
 
-    private final LoggingQueue queue;
-    private final LogWriter writer;
+public class FileLogger extends AbstractLogger implements LifeCycleAware, Archivable {
 
-    public FileLogger(LogLevel level, String directoryName, String fileName) {
-        super(level);
-        this.writer = new FileLogWriter(directoryName, fileName);
-        this.queue = new LoggingQueue(writer);
+    private  LoggingQueue queue;
+    private  File logFile;
+    private  FtpArchiver archiver;
+    private  Timer archiveTimer;
 
+    public FileLogger(LoggerConfig config) {
+        super(config.getLevel());
+
+        try {
+            this.logFile = new File(config.getLogFileDriectory() + File.separator + config.getLogFileName());
+            if (!logFile.exists())
+                logFile.createNewFile();
+        } catch (IOException ioe) {
+            throw new LoggingException(ioe);
+        }
+
+        this.queue = new LoggingQueue(new FileLogWriter(logFile));
+        this.archiver = new FtpArchiver(config);
+        this.archiveTimer = new Timer();
+        long intervalMs = config.getInterval() * 60000L;
+
+        //Normally this is bad news and bad practice.  For the purpose of the exercise I kept it simple.
+        //If ArchiveTask's constructor tried to call any methods on this object while it is still in the constructor it could create problems.
+        //ArchiveTask only sets a reference so it is safe for this use.  The proper way to do this is with an initializer
+        //method called outside this constructor.
+        archiveTimer.scheduleAtFixedRate(new ArchiveTask(this), intervalMs, intervalMs);
+    }
+
+    @Override
+    public void archive() {
+        synchronized (logFile) {
+            try {
+                archiver.archive(logFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -23,5 +60,11 @@ public class FileLogger extends AbstractLogger implements LifeCycleAware {
     @Override
     public void shutdown() {
         queue.stop();
+        archiveTimer.cancel();
     }
+
+
+
+
+
 }

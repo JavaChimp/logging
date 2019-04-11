@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 public class LogManager {
@@ -25,11 +27,10 @@ public class LogManager {
                 .stream().map(LoggerConfig::fromMapEntry)
                 .collect(Collectors.toList());
         for (LoggerConfig configuration : configurations) {
-            loggers.put(configuration.getName(), new FileLogger(configuration.getLevel(),
-                                                                configuration.getLogFileDriectory(),
-                                                                configuration.getLogFileName()));
-            if (loggers.get(configuration.getName()) instanceof  LifeCycleAware)
+            loggers.put(configuration.getName(), new FileLogger(configuration));
                 hooks.add((LifeCycleAware) loggers.get(configuration.getName()));
+
+
         }
     }
 
